@@ -1,0 +1,29 @@
+name: Original macOS UI reference
+on:
+  push:
+    branches: [codex/macos-ui-reference-20261019]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  snapshots:
+    runs-on: macos-15
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build unchanged original source
+        run: swift build --product AgentHUDOpen
+      - name: Render original settings from sample data
+        env:
+          AGENTHUD_SNAPSHOT_PREFIX: settings-
+        run: .build/debug/AgentHUDOpen --snapshot build/ui-reference --lang zh --demo-clock 2026-10-12T09:41
+      - name: Render original Simple display settings
+        env:
+          AGENTHUD_SNAPSHOT_PREFIX: simple-settings
+        run: .build/debug/AgentHUDOpen --snapshot build/ui-reference --lang zh --demo-clock 2026-10-12T09:41
+      - uses: actions/upload-artifact@v4
+        with:
+          name: original-macos-settings
+          path: build/ui-reference/*.png
+          if-no-files-found: error
+          retention-days: 7
