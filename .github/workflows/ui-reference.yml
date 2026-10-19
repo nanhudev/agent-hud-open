@@ -8,7 +8,7 @@ permissions:
 jobs:
   snapshots:
     runs-on: macos-15
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - name: Build unchanged original source
@@ -21,6 +21,16 @@ jobs:
         env:
           AGENTHUD_SNAPSHOT_PREFIX: simple-meter
         run: .build/debug/AgentHUDOpen --snapshot build/ui-reference --lang zh --demo-clock 2026-10-12T09:41
+      - name: Export original bot animation assets
+        env:
+          WINDOWS_BOT_EXPORT: build/windows-bots
+        run: swift test --filter WindowsBotExportTests/testExport
+      - uses: actions/upload-artifact@v4
+        with:
+          name: original-bot-animations
+          path: build/windows-bots
+          if-no-files-found: error
+          retention-days: 14
       - uses: actions/upload-artifact@v4
         with:
           name: original-macos-hud
