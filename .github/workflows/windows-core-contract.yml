@@ -20,3 +20,13 @@ jobs:
           path: build/windows-pricing-contract.json
           if-no-files-found: error
           retention-days: 14
+      - name: Export original layout normalization and save-discard traces
+        env:
+          WINDOWS_LAYOUT_EXPORT: build/windows-layout-contract.json
+        run: swift test --filter WindowsLayoutExportTests/testExport
+      - uses: actions/upload-artifact@v4
+        with:
+          name: original-layout-contract
+          path: build/windows-layout-contract.json
+          if-no-files-found: error
+          retention-days: 14
