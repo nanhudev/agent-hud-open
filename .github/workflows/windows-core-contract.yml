@@ -40,3 +40,13 @@ jobs:
           path: build/windows-plan-contract.json
           if-no-files-found: error
           retention-days: 14
+      - name: Export original API balance spend and run-out rules
+        env:
+          WINDOWS_BALANCE_EXPORT: build/windows-balance-contract.json
+        run: swift test --filter WindowsBalanceExportTests/testExport
+      - uses: actions/upload-artifact@v4
+        with:
+          name: original-balance-contract
+          path: build/windows-balance-contract.json
+          if-no-files-found: error
+          retention-days: 14
