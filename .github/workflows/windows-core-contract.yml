@@ -1,0 +1,22 @@
+name: Windows original core contract
+on:
+  push:
+    branches: [codex/windows-core-contract-20261019]
+permissions:
+  contents: read
+jobs:
+  pricing:
+    runs-on: macos-15
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Export unchanged original model prices and aliases
+        env:
+          WINDOWS_PRICING_EXPORT: build/windows-pricing-contract.json
+        run: swift test --filter WindowsPricingExportTests/testExport
+      - uses: actions/upload-artifact@v4
+        with:
+          name: original-pricing-contract
+          path: build/windows-pricing-contract.json
+          if-no-files-found: error
+          retention-days: 14
