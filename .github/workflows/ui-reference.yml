@@ -26,6 +26,16 @@ jobs:
         env:
           AGENTHUD_SNAPSHOT_PREFIX: stats
         run: .build/debug/AgentHUDOpen --snapshot build/ui-reference --lang zh --demo-clock 2026-10-12T09:41
+      - name: Export unchanged source MCP contract
+        env:
+          WINDOWS_CONTRACT_EXPORT: build/windows-source-contract.json
+        run: swift test --filter WindowsMCPExportTests/testExport
+      - uses: actions/upload-artifact@v4
+        with:
+          name: original-source-contract
+          path: build/windows-source-contract.json
+          if-no-files-found: error
+          retention-days: 14
       - name: Render original Simple geometry variants
         env:
           AGENTHUD_SNAPSHOT_PREFIX: simple-meter
