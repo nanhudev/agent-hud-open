@@ -30,3 +30,13 @@ jobs:
           path: build/windows-layout-contract.json
           if-no-files-found: error
           retention-days: 14
+      - name: Export original block plans and responsive grid geometry
+        env:
+          WINDOWS_PLAN_EXPORT: build/windows-plan-contract.json
+        run: swift test --filter WindowsPlanExportTests/testExport
+      - uses: actions/upload-artifact@v4
+        with:
+          name: original-plan-contract
+          path: build/windows-plan-contract.json
+          if-no-files-found: error
+          retention-days: 14
