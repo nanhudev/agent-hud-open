@@ -8,6 +8,11 @@ on:
         type: boolean
         default: false
         description: Export original animation frames
+      bot_variants:
+        type: choice
+        options: [standard, reminders]
+        default: standard
+        description: Source bot state family
 permissions:
   contents: read
 jobs:
@@ -44,6 +49,7 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.export_bots }}
         env:
           WINDOWS_BOT_EXPORT: build/windows-bots
+          WINDOWS_BOT_VARIANTS: ${{ inputs.bot_variants }}
         run: swift test --filter WindowsBotExportTests/testExport
       - uses: actions/upload-artifact@v4
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.export_bots }}
