@@ -3,6 +3,11 @@ on:
   push:
     branches: [codex/macos-ui-reference-20261019]
   workflow_dispatch:
+    inputs:
+      export_bots:
+        type: boolean
+        default: false
+        description: Export original animation frames
 permissions:
   contents: read
 jobs:
@@ -17,15 +22,21 @@ jobs:
         env:
           AGENTHUD_SNAPSHOT_PREFIX: hud-
         run: .build/debug/AgentHUDOpen --snapshot build/ui-reference --lang zh --demo-clock 2026-10-12T09:41
+      - name: Render original statistics references
+        env:
+          AGENTHUD_SNAPSHOT_PREFIX: stats
+        run: .build/debug/AgentHUDOpen --snapshot build/ui-reference --lang zh --demo-clock 2026-10-12T09:41
       - name: Render original Simple geometry variants
         env:
           AGENTHUD_SNAPSHOT_PREFIX: simple-meter
         run: .build/debug/AgentHUDOpen --snapshot build/ui-reference --lang zh --demo-clock 2026-10-12T09:41
       - name: Export original bot animation assets
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.export_bots }}
         env:
           WINDOWS_BOT_EXPORT: build/windows-bots
         run: swift test --filter WindowsBotExportTests/testExport
       - uses: actions/upload-artifact@v4
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.export_bots }}
         with:
           name: original-bot-animations
           path: build/windows-bots
